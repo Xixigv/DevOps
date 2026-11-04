@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory-auto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memory-auto
+  template:
+    metadata:
+      labels:
+        app: memory-auto
+    spec:
+      containers:
+        - name: memory-auto
+          image: eduardomx/memory-auto:latest
+          resources:
+            requests:
+              memory: "64Mi"       # el HPA calcula el % sobre este valor
+            limits:
+              memory: "200Mi"      # el contenedor se reinicia (OOMKill) si supera esto

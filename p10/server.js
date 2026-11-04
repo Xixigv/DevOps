@@ -3,6 +3,7 @@ const path = require('path');
 
 const app = express();
 const port = 3000;
+const Sentry = require("@sentry/node");
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -11,6 +12,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/error', (req, res) => {
+
   try {
     throw new Error('This is a test error');
   } catch (error) {
@@ -19,6 +21,8 @@ app.get('/api/error', (req, res) => {
       success: false,
       message: 'Error was caught and logged.'
     });
+    throw new Error('This is a test error');
+
   }
 });
 
@@ -28,6 +32,7 @@ app.get('/api/log', (req, res) => {
     success: true,
     message: 'Log message sent successfully.'
   });
+  Sentry.logger.info('User triggered test error', { user: req.query.user });
 });
 
 app.get('/health-probe', (req, res) => {
